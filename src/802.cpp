@@ -1,6 +1,8 @@
 #include <iostream>
 #include <unordered_set>
 #include <vector>
+#include <queue>
+#include <algorithm>
 
 using namespace std;
 
@@ -38,6 +40,41 @@ public:
             }
             visited.resize(n, 0);
         }
+        return safe_nodes;
+    }
+};
+
+
+class Solution2 {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<vector<int>> rgraph(n, vector<int>());
+        vector<int> indegree(n, 0);
+        for ( int i = 0; i < n; ++i ) {
+            for ( int j : graph[i] ) {
+                rgraph[j].push_back(i);
+                ++indegree[i];
+            }
+        }
+        queue<int> que;
+        for ( int i = 0; i < n; ++i ) {
+            if ( indegree[i] == 0 ) {
+                que.push(i);
+            }
+        }
+        vector<int> safe_nodes;
+        while ( !que.empty() ) {
+            int cur_node = que.front();
+            que.pop();
+            safe_nodes.push_back(cur_node);
+            for ( int next_node : rgraph[cur_node] ) {
+                if ( --indegree[next_node] == 0 ) {
+                    que.push(next_node);
+                }
+            }
+        }
+        sort(safe_nodes.begin(), safe_nodes.end());
         return safe_nodes;
     }
 };
