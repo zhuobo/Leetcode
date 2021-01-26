@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric>
+#include <queue>
 
 using namespace std;
 
@@ -87,5 +88,50 @@ public:
             }
         }
         return 0; 
+    }
+};
+
+class Solution2 {
+private:
+    static constexpr int dirs[4][2] = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+
+    // 判断是否有一条路径从起点到终点
+    bool connected(vector<vector<int>>& heights, int cost) {
+        int row = heights.size(), col = heights[0].size();
+        vector<vector<bool>> visited(row, vector<bool>(col, false));
+        queue<pair<int, int>> que;
+        que.emplace(0, 0);
+        visited[0][0] = true;
+        while ( !que.empty() ) {
+            int x = que.front().first, y = que.front().second;
+            que.pop();
+            for ( int i = 0; i < 4; ++i ) {
+                int new_x = x + dirs[i][0], new_y = y + dirs[i][1];
+                if ( new_x >= 0 && new_x < row && new_y >= 0 && new_y < col ) {
+                    if ( !visited[new_x][new_y] && abs(heights[x][y] - heights[new_x][new_y]) <= cost ) {
+                        que.emplace(new_x, new_y);
+                        visited[new_x][new_y] = true;
+                        if ( new_x == row - 1 && new_y == col - 1 ) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return visited[row - 1][col - 1];
+    }
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        // binary search
+        int left = 0, right = 999999;
+        while ( left < right ) {
+            int mid = left + ( right - left ) / 2;
+            if (  connected(heights, mid) ) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
     }
 };
