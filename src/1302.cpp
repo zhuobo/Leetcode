@@ -35,3 +35,29 @@ public:
         return res;
     }
 };
+
+
+class Solution2 {
+private:
+    int max_depth = -1;
+    int total     = 0;
+
+    void dfs(TreeNode* root, int cur_depth) {
+        if ( root == nullptr ) {
+            return;
+        }
+        if ( cur_depth > max_depth ) {
+            max_depth = cur_depth;
+            total = root->val;
+        } else if ( cur_depth == max_depth ) {
+            total += root->val;
+        }
+        dfs(root->left, cur_depth + 1);
+        dfs(root->right, cur_depth + 1);
+    }
+public:
+    int deepestLeavesSum(TreeNode* root) {
+        dfs(root, 0);
+        return total;
+    }
+};
