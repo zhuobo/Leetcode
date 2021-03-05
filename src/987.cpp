@@ -56,3 +56,49 @@ public:
     }
 
 };
+
+
+
+struct node {
+    int val;
+    int row;
+    int col;
+    node(int v, int r, int c) : val(v), row(r), col(c) {  }
+    bool operator<(const node& rhs) {
+        if ( row == rhs.row ) return val < rhs.val;
+        return row < rhs.row;
+    }
+};
+
+
+class Solution2 {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode *root) {
+        map<int, vector<node>> m;
+        vector<vector<int>> res;
+        if ( root == nullptr ) {
+            return res;
+        }
+        dfs(root, 0, 0, m);
+
+        for ( auto& [col, nodes] : m ) {
+            sort(nodes.begin(), nodes.end());
+            res.push_back(vector<int>());
+            for ( const auto node : nodes ) {
+                res.back().push_back(node.val);
+            }
+        }
+        return res;
+    }
+
+    void dfs(TreeNode *root, int row, int col, map<int, vector<node>> &m) {
+        if ( root == nullptr ) return;
+        if ( m.find(col) == m.end() ) {
+            m[col] = vector<node>();
+        }
+        node n(root->val, row, col);
+        m[col].emplace_back(n);
+        dfs(root->left, row + 1, col - 1, m);
+        dfs(root->right, row + 1, col + 1, m);
+    }
+};
