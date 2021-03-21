@@ -5,10 +5,10 @@ using namespace  std;
 
 class UnionFind {
 private:
-    vector<int> parent;
-    vector<int> rank;
-    vector<int> size;
-    int count;
+    vector<int> parent;  // 存储每个数字所在子集合的代表元素
+    vector<int> rank;    // 当前元素为根的层数
+    vector<int> size;    // 元素所在子集合的元素数量
+    int count;           // 子集合数量
 public:
     UnionFind(int n) : parent(n), rank(n, 1), size(n, 1), count(n) {
         std::iota(parent.begin(), parent.end(), 0);
@@ -34,7 +34,7 @@ public:
             size[proot] += size[qroot];
         } else {
             parent[proot] = qroot;
-            ++rank[qroot];
+            ++rank[qroot];          // qroot为根，那么qroot的层数+1
             size[qroot] += size[proot];
         }
         --count;
