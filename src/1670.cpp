@@ -1,4 +1,5 @@
 #include <iostream>
+#include <deque>
 
 using namespace std;
 
@@ -133,8 +134,88 @@ private:
 };
 
 
+class FrontMiddleBackQueue2 {
+public:
+    FrontMiddleBackQueue2() {  }
+    
+    void pushFront(int val) {
+        if ( que1.size() != que2.size() ) {
+            adjustToSecond();
+        }
+        que1.push_front(val);
+    }
+    
+    void pushMiddle(int val) {
+        if ( que1.size() != que2.size() ) {
+            adjustToSecond();
+        }
+        que1.push_back(val);
+    }
+    
+    void pushBack(int val) {
+        que2.push_back(val);
+        if ( que1.size() != que2.size() ) {
+            adjustToFirst();
+        }
+    }
+    
+    int popFront() {
+        if ( que1.empty() ) {
+            return -1;
+        }
+        if ( que1.size() == que2.size() ) {
+            adjustToFirst(); 
+        }
+        int ret = que1.front();
+        que1.pop_front();
+
+        return ret;
+    }
+    
+    int popMiddle() {
+        int ret = -1;
+        if ( que1.empty() ) {
+            return ret;
+        }
+        ret = que1.back();
+        que1.pop_back();
+        if ( que1.size() != que2.size() ) {
+            adjustToFirst();
+        }
+        return ret;
+    }
+    
+    int popBack() {
+        if ( que1.empty() && que2.empty() ) {
+            return -1;
+        }
+        if ( que1.size() != que2.size() ) {
+            adjustToSecond();
+        }
+        int ret = que2.back();
+        que2.pop_back();
+        return ret;
+    }
+
+private:
+    void adjustToFirst() {
+        int temp = que2.front();
+        que2.pop_front();
+        que1.push_back(temp);
+    }
+
+    void adjustToSecond() {
+        int temp = que1.back();
+        que1.pop_back();
+        que2.push_front(temp);
+    }
+
+    deque<int> que1;
+    deque<int> que2;
+};
+
 int main() {
-    FrontMiddleBackQueue queue;
+    FrontMiddleBackQueue2 queue;
     queue.pushFront(1);
     queue.pushBack(2);
     queue.pushMiddle(3);
